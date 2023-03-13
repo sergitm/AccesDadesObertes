@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.1/jquery.min.js"></script>
+    <script src="control.js"></script>
+    <title>Accés a Dades Obertes</title>
+</head>
+<body onload="init()">
+    <div class="container">
+        <h1 class="text-center">Accés a Dades de Contaminació Atmosfèrica</h1>
+
+        <form>
+            <div class="row">
+                <div class="col">
+                    <input type="date" class="form-control" id="data" placeholder="Data">
+                </div>
+                <div class="col">
+                    <input type="text" class="form-control" id="municipi" placeholder="Municipi">
+                </div>
+                <div class="col">
+                    <select class="form-select" id="tipus" aria-label="Selecció de tipus d'estació">
+                        <option selected value="0">Selecciona el tipus d'estació</option>
+                        <option value="industrial">Industrial</option>
+                        <option value="traffic">Tràfic</option>
+                        <option value="background">Fons</option>
+                    </select>
+                </div>
+            </div>
+            <div id="errors">
+                <p id="dataFutura" class="text-danger">*No poden haver resultats de dates futures.</p>
+                <p id="simbols" class="text-danger">*El nom del municipi no pot contenir símbols ni números.</p>
+            </div>
+            <div class="align-items-center d-flex justify-content-center m-4">
+                <input class="btn btn-dark" type="button" id="consulta" value="Consulta les dades!">
+            </div>
+        </form>
+    </div>
+    
+    <div class="container" id="taulaDades">
+
+    </div>
+
+    <div class="container" id="mapa">
+
+    </div>
+</body>
+</html>
