@@ -40,7 +40,6 @@ function consulta(){
                 dades.$limit = limit;
             }
         }
-        console.log(dades);
         $.ajax({
             url: "https://analisi.transparenciacatalunya.cat/resource/tasf-thgu.json",
             type: "GET",
@@ -54,8 +53,21 @@ function consulta(){
                 $('#taulaDades').show();
                 populateTaula(data);
             }
-        }).fail(function() {
-            alert("Error al fer la petició al servidor");
+        }).fail(function(error) {
+            switch (error.status) {
+                case 400:
+                    alert("El servidor ha denegat la petició.\nÉs probable que les dades no siguin correctes.");
+                    break;
+                case 403:
+                    alert("Permís denegat al servidor.");
+                    break;
+                case 404:
+                    alert("No s'ha trobat el servidor.");
+                    break;
+                default:
+                    alert(error.responseJSON.message);
+                    break;
+            }
         });
     }
 }
