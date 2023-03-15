@@ -19,13 +19,17 @@ function consulta(){
 
     // Si no se'ns retorna cap error enviem la petició
     if(!validacioDades(data, municipi)){
-        
+        // Objecte que inclou les dades de la petició
         let dades = {
-            "$select" : "*",
+            "$select" : "*",                    // Al principi tenia una serie de camps aquí, però per la forma en la que funciona la API 
+                                                // hi haurien moltes files sense la quantitat del contaminant, ja que es guarden en un camp en funció de la hora
+                                                // (per exemple, si es troba una concentració de 50 micrograms/m3 de No2 a la 1 del matí, es guarda a un camp anomenat h01, 
+                                                // fins a h24 si fos a les 12 de la nit), i això complica el mostrar els valors, ja que és imprevisible.
             "$limit" : 10,
-            "$$app_token" : "x0fIzm8MqVpAawmYUPekjqYGG"
+            "$$app_token" : "x0fIzm8MqVpAawmYUPekjqYGG"                  // Posar aquí la clau d'autenticació de SOCRATA
         };
-        
+
+        // Dades opcionals que nomes s'incluiran a la petició si els inputs estan plens i són vàlids
         if (data) {
             dades.data = data;
         }
@@ -40,11 +44,14 @@ function consulta(){
                 dades.$limit = limit;
             }
         }
+
+        // PETICIO
         $.ajax({
             url: "https://analisi.transparenciacatalunya.cat/resource/tasf-thgu.json",
             type: "GET",
             data: dades
         }).done(function(data) {
+            // Si la petició ha sigut satisfactòria pero no hi han resultats ho comuniquem a l'usuari
             if (data.length === 0) {
                 alert("No s'han trobat resultats");
             } else {
@@ -54,6 +61,7 @@ function consulta(){
                 populateTaula(data);
             }
         }).fail(function(error) {
+            // Gestionem els possibles errors HTTP que ens pot retornar la petició
             switch (error.status) {
                 case 400:
                     alert("El servidor ha denegat la petició.\nÉs probable que les dades no siguin correctes.");
@@ -175,7 +183,7 @@ function crearMarcador(latitut, longitut, text) {
         });
 }
 
-// Posar el marcador de l'institut en el mapa
+// Posar el marcador al mapa
 function marcarPunt(lat, long, nom_estacio, molecula, nivell, unitat) {
 
     let gMark;

@@ -1,0 +1,1 @@
+Canviar la clau de GOOGLE a index.html i $$app_token a la línia 26 de control.js
