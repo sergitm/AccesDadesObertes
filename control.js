@@ -15,13 +15,14 @@ function consulta(){
     let data = $('#data').val();
     let municipi = $('#municipi').val();
     let tipus = $('#tipus').val();
-    console.log(data, municipi, tipus);
+    let limit = $('#limit').val();
+
     // Si no se'ns retorna cap error enviem la petició
     if(!validacioDades(data, municipi)){
         
         let dades = {
             "$select" : "*",
-            "$limit" : 100,
+            "$limit" : 10,
             "$$app_token" : "x0fIzm8MqVpAawmYUPekjqYGG"
         };
         
@@ -29,21 +30,32 @@ function consulta(){
             dades.data = data;
         }
         if (municipi) {
-            dades.municipi = `${municipi[0].toUpperCase()}${municipi.slice(1).toLowerCase()}`;
+            dades.municipi = municipi;
         }
         if (tipus != '0') {
             dades.tipus_estacio = tipus;
         }
-        
+        if (limit) {
+            if (limit > 0 && limit <= 100) {
+                dades.$limit = limit;
+            }
+        }
+        console.log(dades);
         $.ajax({
             url: "https://analisi.transparenciacatalunya.cat/resource/tasf-thgu.json",
             type: "GET",
             data: dades
         }).done(function(data) {
-          $('#mapa').show();
-          crearMapa(data);
-          $('#taulaDades').show();
-          populateTaula(data);
+            if (data.length === 0) {
+                alert("No s'han trobat resultats");
+            } else {
+                $('#mapa').show();
+                crearMapa(data);
+                $('#taulaDades').show();
+                populateTaula(data);
+            }
+        }).fail(function() {
+            alert("Error al fer la petició al servidor");
         });
     }
 }
@@ -67,7 +79,7 @@ function validacioDades(data, municipi){
         }
     }
     if (municipi) {    
-        if (/^[a-z ]+$/i.test(municipi)) {
+        if (/^[a-z àèéíòóúç]+$/i.test(municipi)) {
             $('#municipi').removeClass('is-invalid');
             $('#simbols').hide();
             errors.municipi = false;
